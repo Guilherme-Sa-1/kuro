@@ -1,4 +1,10 @@
 # Ignorar arquivos de configuração com credenciais
 config.js
 .env
+__pycache__/
+.pyc
+Lib/site-packages/
+.venv/
+venv/
 venv
+=======
