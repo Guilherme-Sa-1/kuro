@@ -1,3 +1,4 @@
 # Ignorar arquivos de configuração com credenciais
 config.js
 .env
+venv
