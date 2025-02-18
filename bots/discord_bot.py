@@ -1,8 +1,14 @@
 import discord
 from discord.ext import commands
+import os
+from dotenv import load_dotenv
 from shared_functions import greet_user, get_news, format_news, get_weather, format_weather
 from features.command_parser import parse_command
 from features.gemini import chat_with_gemini
+
+# Carregar variáveis do .env
+load_dotenv()
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
 # Inicializar o bot
 intents = discord.Intents.default()
@@ -50,6 +56,14 @@ async def on_message(message):
 
     await bot.process_commands(message)  # Permite que comandos tradicionais continuem funcionando
 
+@bot.command()
+async def hello(ctx):
+    """
+    Comando: Responde a !hello.
+    """
+    greeting = greet_user(ctx.author.name)
+    await ctx.send(greeting)
+
 # Executar o bot (chamado por main.py)
 def run_discord_bot():
-    bot.run('Token-discord')
+    bot.run(DISCORD_TOKEN)

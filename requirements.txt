@@ -1,5 +1,5 @@
 discord.py
-python-telegram-bot
+google-generativeai
+python-dotenv
 requests
-openai
-transformers
+beautifulsoup4
