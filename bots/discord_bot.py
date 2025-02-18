@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
-from shared_functions import greet_user, calculate_something, get_news, format_news, get_weather, format_weather
+from shared_functions import greet_user, get_news, format_news, get_weather, format_weather
+from features.command_parser import parse_command
+from features.gemini import chat_with_gemini
 
 # Inicializar o bot
 intents = discord.Intents.default()
@@ -14,39 +16,39 @@ async def on_ready():
     """
     print(f'Kuro (Discord) está pronto! Logado como {bot.user.name}')
 
-@bot.command()
-async def hello(ctx):
+@bot.event
+async def on_message(message):
     """
-    Comando: Responde a !hello.
+    Evento: Responde automaticamente a mensagens humanizadas.
     """
-    greeting = greet_user(ctx.author.name)
-    await ctx.send(greeting)
+    if message.author == bot.user:
+        return  # Evita que o bot responda a si mesmo
 
-@bot.command()
-async def calculate(ctx, a: int, b: int):
-    """
-    Comando: Responde a !calculate <a> <b>.
-    """
-    result = calculate_something(a, b)
-    await ctx.send(f"O resultado é: {result}")
+    if bot.user.mentioned_in(message) or not message.content.startswith("!"):
+        parsed = parse_command(message.content)
 
-@bot.command()
-async def news(ctx, query="technology"):
-    """
-    Comando: Responde a !news <query>.
-    """
-    articles = get_news(query)
-    formatted_news = format_news(articles)
-    await ctx.send(formatted_news)
+        if parsed["action"] == "alert":
+            await message.channel.send(f"⏰ Alerta criado para {parsed['time']} no dia {parsed['date']}.")
 
-@bot.command()
-async def weather(ctx, city_name):
-    """
-    Comando: Responde a !weather <city_name>.
-    """
-    weather_data = get_weather(city_name)
-    formatted_weather = format_weather(weather_data)
-    await ctx.send(formatted_weather)
+        elif parsed["action"] == "weather":
+            weather_data = get_weather(parsed["city"])
+            formatted_weather = format_weather(weather_data)
+            await message.channel.send(formatted_weather)
+
+        elif parsed["action"] == "news":
+            articles = get_news(parsed["topic"])
+            formatted_news = format_news(articles)
+            await message.channel.send(formatted_news)
+
+        elif parsed["action"] == "calculate":
+            result = eval(f"{parsed['num1']} {parsed['operator']} {parsed['num2']}")
+            await message.channel.send(f"🧮 O resultado é: {result}")
+
+        else:
+            resposta = chat_with_gemini(message.content)
+            await message.channel.send(f"🤖 {resposta}")
+
+    await bot.process_commands(message)  # Permite que comandos tradicionais continuem funcionando
 
 # Executar o bot (chamado por main.py)
 def run_discord_bot():

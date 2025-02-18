@@ -6,9 +6,3 @@ def greet_user(username):
     A shared function to greet the user.
     """
     return f"Hello, {username}! Welcome to Kuro."
-
-def calculate_something(a, b):
-    """
-    Example of a shared function that performs a calculation.
-    """
-    return a + b
