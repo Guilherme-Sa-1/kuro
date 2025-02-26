@@ -1,7 +1,6 @@
 # Kuro - Discord AI Assistant 🤖
 
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
 
 Kuro é um assistente inteligente para Discord que combina processamento de linguagem natural com a API do Google Gemini para proporcionar interações humanizadas e contextualizadas.
 
